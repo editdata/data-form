@@ -1,0 +1,28 @@
+{
+  "name": "data-form",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "style": "style.css",
+  "scripts": {
+    "test": "tape test.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/editdata/data-form.git"
+  },
+  "keywords": [
+    "data-ui"
+  ],
+  "author": "sethvincent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/editdata/data-form/issues"
+  },
+  "homepage": "https://github.com/editdata/data-form#readme",
+  "dependencies": {
+    "base-element": "^3.0.1",
+    "data-format": "github:editdata/data-format",
+    "inherits": "^2.0.1"
+  }
+}
