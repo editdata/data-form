@@ -3,7 +3,7 @@
 ## Install
 
 ```
-npm i --save editdata/data-format
+npm i --save editdata/data-form
 ```
 
 ## License

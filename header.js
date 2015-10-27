@@ -11,7 +11,7 @@ function FormHeader () {
 
 FormHeader.prototype.render = function (state) {
   var self = this
-  var vtree = this.html('div#data-form-header', [
+  var vtree = this.html('div.data-form-header', [
     this.html('div.data-form-actions', [
       this.html('button.data-form-action.data-form-action-close.button', {
         href: '#',
@@ -23,15 +23,3 @@ FormHeader.prototype.render = function (state) {
   ])
   return this.afterRender(vtree)
 }
-
-/*
-destroy button
-
-,
-this.html('button#destroyRow.small.button-orange', {
-  onclick: function (e) {
-    self.send('row:destroy', state.activeRow.data)
-  }
-}, 'destroy row')
-])
-*/

@@ -3,6 +3,7 @@ var inherits = require('inherits')
 
 var formatter = require('data-format')()
 var createHeader = require('./header')
+var fields = require('data-fields')
 
 module.exports = DataForm
 inherits(DataForm, BaseElement)
@@ -31,17 +32,15 @@ DataForm.prototype.render = function (state) {
     var property = formatter.findProperty(state.properties, key)
     var value = columns[key]
     var type = property.type[0]
-    if (type === 'string') {
-      var el = 'textarea#data-form-field-' + key + '.data-form-field.data-element-string'
-      var field = h(el, {
-        value: value
-      }, value)
-    }
+
+    var field = fields[type](h, {
+      fieldType: 'input',
+      id: 'data-field-' + key,
+      value: value
+    })
+
     var label = h('label.data-form-label', property.name)
-    var wrapper = h('div.data-form-field-wrapper', [
-      label,
-      field
-    ])
+    var wrapper = h('div.data-form-field-wrapper', [label, field])
     fields.push(wrapper)
   })
 

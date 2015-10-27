@@ -22,6 +22,7 @@
   "homepage": "https://github.com/editdata/data-form#readme",
   "dependencies": {
     "base-element": "^3.0.1",
+    "data-fields": "^1.0.0",
     "data-format": "github:editdata/data-format",
     "inherits": "^2.0.1"
   }
