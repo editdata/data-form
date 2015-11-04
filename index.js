@@ -1,54 +1,76 @@
-var BaseElement = require('base-element')
-var inherits = require('inherits')
-
+var h = require('virtual-dom/h')
+var Emitter = require('component-emitter')
 var formatter = require('data-format')()
 var createHeader = require('./header')
 var fields = require('data-fields')
 
-module.exports = DataForm
-inherits(DataForm, BaseElement)
-
-function DataForm (options) {
-  if (!(this instanceof DataForm)) return new DataForm(options)
+module.exports = function createDataForm (options) {
   options = options || {}
-  BaseElement.call(this, options.el)
-  var self = this
-  this.header = options.header || createHeader()
-  this.header.addEventListener('close', function (e) {
-    self.send('close', e)
-  })
-  this.header.addEventListener('row:destroy', function (row) {
-    self.send('row:destroy', row)
-  })
-}
+  var form = {}
+  Emitter(form)
 
-DataForm.prototype.render = function (state) {
-  if (!state.activeRow) return
-  var h = this.html
-  var fields = []
-  var columns = state.activeRow.data.value
+  if (options.header !== false) {
+    var header = createHeader({
+      onclick: function () {
+        form.emit('close')
+      }
+    })
+  }
 
-  Object.keys(columns).forEach(function (key) {
-    var property = formatter.findProperty(state.properties, key)
-    var value = columns[key]
-    var type = property.type[0]
+  form.render = function form_render (state) {
+    if (!state.activeRow) return
+    var row = state.activeRow
+    var elements = []
+    var columns = row.data.value
 
-    var field = fields[type](h, {
-      fieldType: 'input',
-      id: 'data-field-' + key,
-      value: value
+    Object.keys(columns).forEach(function (key) {
+      var property = formatter.findProperty(state.properties, key)
+      var value = columns[key]
+      var type = property.type[0]
+
+      if (type === 'array') { type = 'list' }
+      if (type === 'object') {
+        if (value.type && value.type === 'Feature') {
+          type = 'geojson'
+        } else {
+          type = 'list'
+        }
+      }
+
+      var fieldOptions = {
+        fieldType: 'input',
+        id: 'data-field-' + key
+      }
+
+      if (type === 'geojson') {
+        fieldOptions.zoom = 12
+        fieldOptions.center = [47.621958, -122.33636]
+      }
+
+      var field = fields[type](fieldOptions)
+      var vtree = field.render(h, { value: value })
+
+      field.on('update', function (e, value) {
+        row.data.value[key] = value
+        form.emit('update', e, row, value, key)
+      })
+
+      var label = h('label.data-form-label', property.name)
+      var wrapper = h('div.data-form-field-wrapper', [label, vtree])
+      elements.push(wrapper)
     })
 
-    var label = h('label.data-form-label', property.name)
-    var wrapper = h('div.data-form-field-wrapper', [label, field])
-    fields.push(wrapper)
-  })
+    var sections = []
 
-  var vtree = this.html('div#data-form-wrapper', [
-    this.html('div#data-form', [
-      this.header.render(state),
-      this.html('div.data-form-fields', fields)
+    if (header) {
+      sections.push(header(state))
+    }
+
+    sections.push(h('div.data-form-fields', elements))
+    return h('div#data-form-wrapper', [
+      h('div#data-form', sections)
     ])
-  ])
-  return this.afterRender(vtree)
+  }
+
+  return form
 }

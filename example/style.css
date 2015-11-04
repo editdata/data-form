@@ -1,0 +1,65 @@
+@import "../style.css";
+
+html,
+body {
+  font: 18px/1.5 'Source Sans Pro', 'Helvetica Neue', Helvetica, arial, sans-serif;
+  color: #444;
+  font-weight: 500;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: #fafafa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: #555;
+}
+
+a:hover, a:focus {
+  color: #000;
+}
+
+#app, #editor-wrapper, .view-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.view-wrapper {
+  position: fixed;
+}
+
+.view-wrapper.card-open {
+  width: 57%;
+}
+
+.data-form-fields .data-field-geojson-map-container {
+  height: 500px;
+  width: 100%;
+}
+
+.data-form-fields .data-field-geojson {
+  height: 500px;
+}
+
+.data-form-field-wrapper {
+
+}
+
+#data-form-wrapper {
+  width: 70%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -2px 3px 5px rgba(0,0,0,0.1);
+  margin: 50px auto;
+}

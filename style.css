@@ -1,22 +1,9 @@
 #data-form-wrapper {
-  position: fixed;
-  width: 43%;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #fff;
-  border-left: 1px solid #ccc;
-  padding: 20px;
-  overflow-y: auto;
-  box-shadow: -2px 3px 5px rgba(0,0,0,0.1);
+
 }
 
 .data-form-header {
-  height: 60px;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  background-color: #fff;
+
 }
 
 .data-form-actions {
@@ -45,9 +32,7 @@
   border: 0px;
 }
 
-.data-form-fields {
-  margin-top: 60px;
-}
+.data-form-fields {}
 
 .data-form-label {
   display: block;
@@ -62,6 +47,9 @@
   font-size: 14px;
   outline: 0;
   color: #aaa;
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .data-form-fields .data-field:focus {
