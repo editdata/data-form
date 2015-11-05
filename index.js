@@ -4,19 +4,35 @@ var formatter = require('data-format')()
 var createHeader = require('./header')
 var fields = require('data-fields')
 
+/**
+* Create a form from the row of a dataset and its properties
+* @name createDataForm
+* @param {Object} options
+* @param {Boolean} options.header
+* @param {Object} options.header virtual-dom vtree that should be used for the header
+*/
 module.exports = function createDataForm (options) {
   options = options || {}
   var form = {}
   Emitter(form)
 
-  if (options.header !== false) {
-    var header = createHeader({
+  var header
+  if (typeof options.header === 'object') {
+    header = options.header
+  } else if (options.header !== false) {
+    header = createHeader({
       onclick: function () {
         form.emit('close')
       }
     })
   }
 
+  /**
+  * Create a form from the row of a dataset and its properties
+  * @name form.render
+  * @param {Object} state
+  * @param {Object} state.activeRow
+  */
   form.render = function form_render (state) {
     if (!state.activeRow) return
     var row = state.activeRow

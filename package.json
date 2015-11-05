@@ -5,6 +5,7 @@
   "main": "index.js",
   "style": "style.css",
   "scripts": {
+    "docs": "documentation-readme README.md -s \"API\" -- index.js",
     "example-css": "sheetify example/style.css > example/bundle.css",
     "example": "budo example/index.js --dir example --live --onupdate 'npm run example-css'",
     "test": "tape test.js | tap-spec"
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "budo": "^5.1.5",
-    "data-editor": "github:editdata/data-editor"
+    "data-editor": "github:editdata/data-editor",
+    "documentation-readme": "^2.1.0"
   }
 }
