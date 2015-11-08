@@ -1,8 +1,8 @@
 var h = require('virtual-dom/h')
 var Emitter = require('component-emitter')
-var formatter = require('data-format')()
-var createHeader = require('./header')
+var editor = require('data-editor')()
 var fields = require('data-fields')
+var createHeader = require('./header')
 
 /**
 * Create a form from the row of a dataset and its properties
