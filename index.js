@@ -1,6 +1,7 @@
 var h = require('virtual-dom/h')
 var Emitter = require('component-emitter')
 var fields = require('data-fields')
+var formatter = require('data-format')()
 var createHeader = require('./header')
 
 /**
