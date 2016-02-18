@@ -26,7 +26,6 @@
   "dependencies": {
     "base-element": "^3.0.1",
     "component-emitter": "^1.2.0",
-    "data-editor": "github:editdata/data-editor",
     "data-fields": "^2.0.0",
     "data-format": "github:editdata/data-format",
     "inherits": "^2.0.1"
