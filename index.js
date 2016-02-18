@@ -37,7 +37,7 @@ module.exports = function createDataForm (options) {
     if (!state.activeRow) return
     var row = state.activeRow
     var elements = []
-    var columns = row.data.value
+    var columns = row.value
 
     Object.keys(columns).forEach(function (key) {
       var property = formatter.findProperty(state.properties, key)
