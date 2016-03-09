@@ -6,8 +6,7 @@
   "style": "style.css",
   "scripts": {
     "docs": "documentation-readme README.md -s \"API\" -- index.js",
-    "example-css": "sheetify example/style.css > example/bundle.css",
-    "example": "budo example/index.js --dir example --live --onupdate 'npm run example-css'",
+    "example": "budo example/index.js --dir example --live",
     "test": "tape test.js | tap-spec"
   },
   "repository": {
@@ -26,13 +25,16 @@
   "dependencies": {
     "base-element": "^3.0.1",
     "component-emitter": "^1.2.0",
-    "data-fields": "^2.0.0",
+    "data-fields": "github:editdata/data-fields",
     "data-format": "github:editdata/data-format",
-    "inherits": "^2.0.1"
+    "inherits": "^2.0.1",
+    "virtual-hook": "^1.0.1"
   },
   "devDependencies": {
-    "budo": "^5.1.5",
+    "browserify": "^13.0.0",
+    "budo": "^8.1.0",
     "data-editor": "github:editdata/data-editor",
-    "documentation-readme": "^2.1.0"
+    "documentation-readme": "^2.1.0",
+    "sheetify": "^4.1.0"
   }
 }
