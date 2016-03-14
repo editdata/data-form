@@ -7,12 +7,12 @@ var createHeader = require('./header')
 module.exports = Form
 
 function Form (h, options) {
-  console.log(options)
   var activeColumnKey = options.activeColumnKey
   var oninput = options.oninput
   var onclick = options.onclick
   var ondestroy = options.ondestroy
   var onclose = options.onclose
+  var onupdate = options.onupdate
   var properties = options.properties
   var row = options.row
   var columns = row.value
@@ -46,6 +46,10 @@ function Form (h, options) {
     if (onclose) return onclose(event)
   }
 
+  function onUpdate (event) {
+    if (onupdate) return onupdate(event)
+  }
+
   Object.keys(columns).forEach(function (propertyKey) {
     var property = formatter.findProperty(properties, propertyKey)
     var value = columns[propertyKey]
@@ -71,6 +75,7 @@ function Form (h, options) {
       className: 'item-property-value',
       oninput: onInput(rowKey, propertyKey),
       onclick: onClick(rowKey, propertyKey),
+      onupdate: onUpdate,
       center: [47.621958, -122.33636],
       zoom: 12
     }
