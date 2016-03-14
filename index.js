@@ -1,13 +1,13 @@
 /*global requestAnimationFrame*/
 var formatter = require('data-format')()
-var h = require('virtual-dom/h')
 var fieldTypes = require('data-fields')
 var vhook = require('virtual-hook')
 var createHeader = require('./header')
 
 module.exports = Form
 
-function Form (options) {
+function Form (h, options) {
+  console.log(options)
   var activeColumnKey = options.activeColumnKey
   var oninput = options.oninput
   var onclick = options.onclick
@@ -22,7 +22,7 @@ function Form (options) {
   if (typeof options.header === 'object') {
     header = options.header
   } else if (options.header !== false) {
-    header = createHeader({ onclick: onClose })
+    header = createHeader(h, { onclick: onClose })
   }
 
   function onInput (rowKey, propertyKey) {
