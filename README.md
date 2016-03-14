@@ -23,7 +23,7 @@ Create a form from the row of a dataset and its properties
     -   `options.header` **Object** virtual-dom vtree that should be used for the header
     -   `options.onclick` **Function** Event handler that fires when a field is clicked
     -   `options.oninput` **Function** Event handler that fires when a field is receiving input.  Receives the arguments `event`, `rowKey`, `propertyKey`, `inputValue`
-    -   `options.oninput` **Function** Event handler that fires when a field is receiving input
+    -   `options.onupdate` **Function** Event handler that fires whenever some data has changed.
     -   `options.ondestroy` **Function** Event handler that fires when user clicks the `destroy row` button.
     -   `options.onclose` **Function** Event handler that fires when user clicks the `close` button.
 
