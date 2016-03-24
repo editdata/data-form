@@ -35,6 +35,7 @@
     "budo": "^8.1.0",
     "data-editor": "github:editdata/data-editor",
     "documentation-readme": "^2.1.0",
-    "sheetify": "^4.1.0"
+    "sheetify": "^4.1.0",
+    "virtual-raf": "^3.0.0"
   }
 }

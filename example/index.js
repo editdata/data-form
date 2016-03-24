@@ -1,3 +1,4 @@
+var vraf = require('virtual-raf')
 var h = require('virtual-dom/h')
 var formatter = require('data-format')()
 var createElement = require('virtual-dom/create-element')
@@ -26,16 +27,23 @@ function onclick (e) {
   console.log('clicking', e.target)
 }
 
-function render (state) {
-  state.activeRow = { data: state.data[0] }
-  state.oninput = oninput
-  state.onclose = onclose
-  state.ondestroy = ondestroy
-  state.onclick = onclick
-  state.row = state.data[0]
-
-  var tree = form(h, state)
-  document.getElementById('app').appendChild(createElement(tree))
+function onupdate (e, row) {
+  console.log('new row data', row)
+  state.row = row
+  tree.update(state)
 }
 
-render(state)
+state.activeRow = { data: state.data[0] }
+state.oninput = oninput
+state.onclose = onclose
+state.ondestroy = ondestroy
+state.onclick = onclick
+state.onupdate = onupdate
+state.row = state.data[0]
+
+function render (state) {
+  return form(h, state)
+}
+
+var tree = vraf(state, render, require('virtual-dom'))
+document.getElementById('app').appendChild(tree.render())

@@ -28,7 +28,11 @@ function Form (h, options) {
   function onInput (rowKey, propertyKey) {
     return function (event) {
       var inputValue = event.target.value
-      if (oninput) return oninput(event, rowKey, propertyKey, inputValue)
+      if (oninput) oninput(event, rowKey, propertyKey, inputValue)
+      if (onupdate) {
+        row.value[propertyKey] = inputValue
+        onupdate(event, row)
+      }
     }
   }
 
@@ -46,8 +50,8 @@ function Form (h, options) {
     if (onclose) return onclose(event)
   }
 
-  function onUpdate (event) {
-    if (onupdate) return onupdate(event)
+  function onUpdate (event, row) {
+    if (onupdate) return onupdate(event, row)
   }
 
   Object.keys(columns).forEach(function (propertyKey) {
@@ -86,6 +90,24 @@ function Form (h, options) {
         type = 'geoJSON'
       } else {
         type = 'list'
+      }
+    }
+
+    // Register default event handlers for type `list`
+    if (type === 'list') {
+      fieldOptions.removeItem = function removeItem (e, items) {
+        if (Array.isArray(row.value[propertyKey])) {
+          items = Object.keys(items).map(function (key) {
+            return items[key]
+          })
+        }
+        row.value[propertyKey] = items
+        onUpdate(e, row)
+      }
+
+      fieldOptions.onsubmit = function onsubmit (e, items, item) {
+        row.value[propertyKey] = items
+        onUpdate(e, row)
       }
     }
 
