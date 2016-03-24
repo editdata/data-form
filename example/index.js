@@ -1,7 +1,6 @@
 var vraf = require('virtual-raf')
 var h = require('virtual-dom/h')
 var formatter = require('data-format')()
-var createElement = require('virtual-dom/create-element')
 var form = require('../index')
 
 var data = require('./data.json')
