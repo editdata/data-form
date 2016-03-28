@@ -13,6 +13,7 @@ function Form (h, options) {
   var ondestroy = options.ondestroy
   var onclose = options.onclose
   var onupdate = options.onupdate
+  var onfocus = options.onfocus
   var properties = options.properties
   var row = options.row
   var columns = row.value
@@ -54,6 +55,12 @@ function Form (h, options) {
     if (onupdate) return onupdate(event, row)
   }
 
+  function onFocus (rowKey, propertyKey) {
+    return function (event) {
+      if (onfocus) return onfocus(event, rowKey, propertyKey)
+    }
+  }
+
   Object.keys(columns).forEach(function (propertyKey) {
     var property = formatter.findProperty(properties, propertyKey)
     var value = columns[propertyKey]
@@ -79,6 +86,7 @@ function Form (h, options) {
       className: 'item-property-value',
       oninput: onInput(rowKey, propertyKey),
       onclick: onClick(rowKey, propertyKey),
+      onfocus: onFocus(rowKey, propertyKey),
       onupdate: onUpdate,
       center: [47.621958, -122.33636],
       zoom: 12
