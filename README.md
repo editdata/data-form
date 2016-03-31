@@ -2,6 +2,8 @@
 
 Generate a form from the row of a dataset and it's JSONSchema-style properties.
 
+[![npm](https://img.shields.io/npm/v/data-form.svg)](http://npmjs.com/data-form)
+
 ## Install
 
     npm i --save editdata/data-form
