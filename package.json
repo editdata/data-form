@@ -1,6 +1,6 @@
 {
   "name": "data-form",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "style": "style.css",
@@ -25,7 +25,7 @@
   "dependencies": {
     "base-element": "^3.0.1",
     "component-emitter": "^1.2.0",
-    "data-fields": "^4.0.0",
+    "data-fields": "^5.0.0",
     "data-format": "^1.0.0",
     "inherits": "^2.0.1",
     "virtual-hook": "^1.0.1"

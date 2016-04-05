@@ -23,7 +23,10 @@ function Form (h, options) {
   if (typeof options.header === 'object') {
     header = options.header
   } else if (options.header !== false) {
-    header = createHeader(h, { onclick: onClose })
+    header = createHeader(h, {
+      onclick: onClose,
+      closeButtonText: options.closeButtonText
+    })
   }
 
   function onInput (rowKey, propertyKey) {
@@ -101,8 +104,10 @@ function Form (h, options) {
       }
     }
 
-    // Register default event handlers for type `list`
+    // Register default options & event handlers for type `list`
     if (type === 'list') {
+      fieldOptions.keys = false
+
       fieldOptions.removeItem = function removeItem (e, items) {
         if (Array.isArray(row.value[propertyKey])) {
           items = Object.keys(items).map(function (key) {
@@ -110,6 +115,10 @@ function Form (h, options) {
           })
         }
         row.value[propertyKey] = items
+        onUpdate(e, row)
+      }
+
+      fieldOptions.oninput = function onsubmit (e, items, item) {
         onUpdate(e, row)
       }
 

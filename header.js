@@ -3,7 +3,7 @@ module.exports = function createFormHeader (h, options) {
     h('div.data-form-actions', [
       h('button.data-form-action.data-form-action-close.button', {
         onclick: options.onclick
-      }, options.closeButton || 'close')
+      }, options.closeButtonText || 'close')
     ])
   ])
 }
