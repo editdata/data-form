@@ -1,4 +1,4 @@
-#data-form
+# data-form
 
 Generate a form from the row of a dataset and it's JSONSchema-style properties.
 
@@ -6,28 +6,59 @@ Generate a form from the row of a dataset and it's JSONSchema-style properties.
 
 ## Install
 
-    npm i --save editdata/data-form
+```sh
+npm i --save editdata/data-form
+```
 
-## API
+## Example
 
-createDataForm(h, options)
+```js
+var format = require('data-format')
+var createForm = require('../index')
 
-### createDataForm
+var form = createForm({
+  closeForm: closeForm,
+  destroyForm: destroyForm,
+  updateField: updateField,
+  clickField: clickField,
+  focusField: focusField,
+  blurField: blurField
+})
 
-Create a form from the row of a dataset and its properties
+var data = [{
+  example: 'text',
+  another: 'more text',
+  cool: 'another'
+}]
 
-**Parameters**
-- `h` **Function** DOM hyperscript function
--   `options` **Object**
-    -   `options.row` **Array** The row to be edited
-    -   `options.properties` **Object** The row properties/column names
-    -   `options.header` **Boolean**
-    -   `options.header` **Object** virtual-dom vtree that should be used for the header
-    -   `options.onclick` **Function** Event handler that fires when a field is clicked
-    -   `options.oninput` **Function** Event handler that fires when a field is receiving input.  Receives the arguments `event`, `rowKey`, `propertyKey`, `inputValue`
-    -   `options.onupdate` **Function** Event handler that fires whenever some data has changed.
-    -   `options.ondestroy` **Function** Event handler that fires when user clicks the `destroy row` button.
-    -   `options.onclose` **Function** Event handler that fires when user clicks the `close` button.
+var formatted = format(data)
+var tree = form(formatted)
+document.body.appendChild(tree)
+
+function closeForm (e, state) {
+  console.log('closeForm: implement form closing logic here')
+}
+
+function destroyForm (e, state) {
+  console.log('destroyForm: implement logic to delete the resource here')
+}
+
+function updateField (e, key, value, prop, row, props) {
+  console.log('updateField: use to update field in state', key, value)
+}
+
+function clickField (e, key, value, prop, row, props) {
+  console.log('clickField: a field was clicked', key, value)
+}
+
+function focusField (e, key, value, prop, row, props) {
+  console.log('focusField: a field is in focus', key, value)
+}
+
+function blurField (e, key, value, prop, row, props) {
+  console.log('blurField: a field is no longer in focus', key, value)
+}
+```
 
 ## License
 
