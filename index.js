@@ -1,154 +1,131 @@
-/*global requestAnimationFrame*/
-var formatter = require('data-format')()
-var fieldTypes = require('data-fields')
-var vhook = require('virtual-hook')
-var createHeader = require('./header')
+var html = require('bel')
 
-module.exports = Form
+module.exports = function createDataForm (options) {
+  options = options || {}
 
-function Form (h, options) {
-  var activeColumnKey = options.activeColumnKey
-  var oninput = options.oninput
-  var onclick = options.onclick
-  var ondestroy = options.ondestroy
-  var onclose = options.onclose
-  var onupdate = options.onupdate
-  var onfocus = options.onfocus
-  var properties = options.properties
-  var row = options.row
-  var columns = row.value
-  var fields = []
-  var header
+  // NOTE: available event handlers:
+  // options.destroyForm
+  // options.closeForm
+  // options.updateField
+  // options.focusField
+  // options.blurField
+  // options.clickField
 
-  if (typeof options.header === 'object') {
-    header = options.header
-  } else if (options.header !== false) {
-    header = createHeader(h, {
-      onclick: onClose,
-      closeButtonText: options.closeButtonText
-    })
+  var toolbar
+  if (typeof options.toolbar === 'function' || options.toolbar === false) {
+    toolbar = options.toolbar
+  } else {
+    toolbar = createToolbar(options)
   }
 
-  function onInput (rowKey, propertyKey) {
-    return function (event) {
-      var inputValue = event.target.value
-      if (oninput) oninput(event, rowKey, propertyKey, inputValue)
-      if (onupdate) {
-        row.value[propertyKey] = inputValue
-        onupdate(event, row)
-      }
+  var fields = createFields(options)
+
+  function render (state) {
+    return html`<div class="data-form">
+      ${toolbar ? toolbar(state) : ''}
+      ${fields(state)}
+    </div>`
+  }
+
+  return render
+}
+
+function createToolbar (options) {
+  var closeText = options.closeButtonText || 'close'
+  var destroyText = options.destroyButtonText || 'destroy'
+  var closeForm = options.closeForm || noop
+  var destroyForm = options.destroyForm || noop
+
+  return function render (state) {
+    function onClickClose (e) {
+      closeForm(e, state)
     }
-  }
 
-  function onClick (rowKey, propertyKey) {
-    return function (event) {
-      if (onclick) return onclick(event, rowKey, propertyKey)
+    function onClickDestroy (e) {
+      destroyForm(e, state)
     }
+
+    return html`<div class="data-form-toolbar">
+      <div class="data-form-toolbar-actions">
+        <button class="data-form-action data-form-action-close button" onclick=${onClickClose}>
+          ${closeText}
+        </button>
+        <button class="data-form-action data-form-action-destroy button" onclick=${onClickDestroy}>
+          ${destroyText}
+        </button>
+      </div>
+    </div>`
   }
+}
 
-  function onDestroy (event) {
-    if (ondestroy) return ondestroy(event, row.key)
-  }
+function createFields (options) {
+  var updateField = options.updateField || noop
+  var focusField = options.focusField || noop
+  var blurField = options.blurField || noop
+  var clickField = options.clickField || noop
 
-  function onClose (event) {
-    if (onclose) return onclose(event)
-  }
-
-  function onUpdate (event, row) {
-    if (onupdate) return onupdate(event, row)
-  }
-
-  function onFocus (rowKey, propertyKey) {
-    return function (event) {
-      if (onfocus) return onfocus(event, rowKey, propertyKey)
-    }
-  }
-
-  Object.keys(columns).forEach(function (propertyKey) {
-    var property = formatter.findProperty(properties, propertyKey)
-    var value = columns[propertyKey]
-    var rowKey = row.key
-    var type = property.type[0]
-
-    var hooks = {
-      hook: function (node, prop, prev) {
-        if (propertyKey === activeColumnKey) {
-          requestAnimationFrame(function () {
-            node.focus()
-          })
-        }
-      }
-    }
+  return function render (state) {
+    var values = state.data[0].value
+    var props = state.properties
+    var keys = Object.keys(props)
 
     var fieldOptions = {
-      h: h,
-      custom: vhook(hooks),
-      id: 'item-property-' + row.key + '-' + propertyKey,
-      attributes: { 'data-key': propertyKey },
-      value: columns[propertyKey],
-      className: 'item-property-value',
-      oninput: onInput(rowKey, propertyKey),
-      onclick: onClick(rowKey, propertyKey),
-      onfocus: onFocus(rowKey, propertyKey),
-      onupdate: onUpdate,
-      center: [47.621958, -122.33636],
-      zoom: 12
-    }
-
-    if (type === 'array') { type = 'list' }
-    if (type === 'object') {
-      if (value.type && value.type === 'Feature') {
-        type = 'geoJSON'
-      } else {
-        type = 'list'
+      updateField: function update (e, key, value, prop) {
+        updateField(e, key, value, prop, state.data[0], props)
+      },
+      focusField: function focus (e, key, value, prop) {
+        focusField(e, key, value, prop, state.data[0], props)
+      },
+      blurField: function blur (e, key, value, prop) {
+        blurField(e, key, value, prop, state.data[0], props)
+      },
+      clickField: function click (e, key, value, prop) {
+        clickField(e, key, value, prop, state.data[0], props)
       }
     }
 
-    // Register default options & event handlers for type `list`
-    if (type === 'list') {
-      fieldOptions.keys = false
+    var fields = keys.map(function (key) {
+      var prop = props[key]
+      // TODO: reimplement different field types
+      return textField(prop.name, values[key], prop, fieldOptions)
+    })
 
-      fieldOptions.removeItem = function removeItem (e, items) {
-        if (Array.isArray(row.value[propertyKey])) {
-          items = Object.keys(items).map(function (key) {
-            return items[key]
-          })
-        }
-        row.value[propertyKey] = items
-        onUpdate(e, row)
-      }
-
-      fieldOptions.oninput = function onsubmit (e, items, item) {
-        onUpdate(e, row)
-      }
-
-      fieldOptions.onsubmit = function onsubmit (e, items, item) {
-        row.value[propertyKey] = items
-        onUpdate(e, row)
-      }
-    }
-
-    var field = fieldTypes[type](h, fieldOptions)
-
-    var fieldwrapper = h('div.item-property-wrapper', [
-      h('span.item-property-label', property.name),
-      field
-    ])
-
-    fields.push(fieldwrapper)
-  })
-
-  return h('div#item.active', [
-    h('div.item', [
-      header,
-      h('button#destroyRow.small.button-orange', {
-        onclick: onDestroy
-      }, 'destroy row'),
-      h('div.item-properties-wrapper', {
-        attributes: {
-          'data-key': row.key
-        }
-      }, fields)
-    ])
-  ])
+    return html`<div class="data-form-fields">
+      <div class="data-form-fields-wrapper">
+        ${fields}
+      </div>
+    </div>`
+  }
 }
+
+// TODO: reimplement different field types
+function textField (key, value, prop, options) {
+  function onfocus (e) {
+    var val = e.target.value
+    options.focusField(e, key, val, prop)
+  }
+
+  function onblur (e) {
+    var val = e.target.value
+    options.blurField(e, key, val, prop)
+  }
+
+  function oninput (e) {
+    var val = e.target.value
+    options.updateField(e, key, val, prop)
+  }
+
+  function onclick (e) {
+    var val = e.target.value
+    options.clickField(e, key, val, prop)
+  }
+
+  return html`<div class="data-form-field" onclick=${onclick}>
+    <label class="data-form-label" for="data-form-field-input-${prop.key}">
+      ${key}
+    </label>
+    <textarea id="data-form-field-input-${prop.key}" onfocus=${onfocus} onblur=${onblur} oninput=${oninput} value=${value}>${value}</textarea>
+  </div>`
+}
+
+function noop () {}
